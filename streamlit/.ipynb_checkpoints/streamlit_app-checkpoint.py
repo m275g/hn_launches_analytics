@@ -225,7 +225,7 @@ with st.container():
     launches_table[['employees', 'revenue', 'total_funding']] = launches_table[['employees', 'revenue', 'total_funding']].replace([0, 0.0], 'NA').astype('str')
     launches_table['github_stars'] = launches_table['github_stars'].replace(0, '').astype('str')
 
-    st.dataframe(launches_table.style.set_properties(subset = ['is_oss'], **{'width': '100px'}))
+    st.dataframe(launches_table.style.set_properties(subset = ['is_oss'], **{'width': '1000px'}))
 
 st.text(
 """
