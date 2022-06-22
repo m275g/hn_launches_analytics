@@ -21,8 +21,8 @@ st.set_page_config(
 @st.cache
 def get_launches_metrics(): 
     
-    clickhouse = Client('85.193.83.20', database = 'hn_launches',
-                        user = 'admin', password = '0987654321')
+    clickhouse = Client( st.secrets['clickhouse']['host'], database = 'hn_launches',
+                        user = st.secrets['clickhouse']['user'], password =  st.secrets['clickhouse']['password'])
 
     metrics = clickhouse.query_dataframe("""
     select l.item_id as item_id, max(date(l.time)) as date, max(name) as name, 
