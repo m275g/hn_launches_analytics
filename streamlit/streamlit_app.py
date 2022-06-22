@@ -18,7 +18,6 @@ st.set_page_config(
 
 
 #[Define funcs]
-@st.cache
 def get_launches_metrics(): 
     
     clickhouse = Client(host = st.secrets['clickhouse']['host'], database = 'hn_launches',
