@@ -14,9 +14,7 @@ from clickhouse_driver.client import Client
 st.set_page_config(
     page_title = 'HN Laucnhes',
     page_icon = '🌱',
-    layout = 'wide',
-    theme = 'Ligth'
-     )
+    layout = 'wide')
 
 
 #[Define funcs]
