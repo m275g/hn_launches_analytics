@@ -215,7 +215,7 @@ st.plotly_chart(\
 go.Figure(go.Heatmap(z = corr.values, x = corr.columns, y = corr.columns, 
                      text = corr.values, texttemplate = '%{text}',
                      colorscale = px.colors.diverging.RdBu,
-                     zmin = -1, zmax = 1)).show(), use_container_width = True)
+                     zmin = -1, zmax = 1)), use_container_width = True)
 
 
 #Search for launches
