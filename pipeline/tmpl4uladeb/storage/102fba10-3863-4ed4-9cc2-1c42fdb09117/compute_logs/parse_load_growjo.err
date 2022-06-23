@@ -1,0 +1,18 @@
+[32m2022-06-23 23:37:27 +0300[0m - dagster - [34mDEBUG[0m - growjo_job - 102fba10-3863-4ed4-9cc2-1c42fdb09117 - 45688 - parse_load_growjo - LOGS_CAPTURED - Started capturing logs for step: parse_load_growjo.
+[32m2022-06-23 23:37:27 +0300[0m - dagster - [34mDEBUG[0m - growjo_job - 102fba10-3863-4ed4-9cc2-1c42fdb09117 - 45688 - parse_load_growjo - STEP_START - Started execution of step "parse_load_growjo".
+[32m2022-06-23 23:37:27 +0300[0m - dagster - [34mERROR[0m - [31mgrowjo_job - 102fba10-3863-4ed4-9cc2-1c42fdb09117 - 45688 - parse_load_growjo - STEP_FAILURE - Execution of step "parse_load_growjo" failed.
+
+dagster.core.errors.DagsterExecutionStepExecutionError: Error occurred while executing op "parse_load_growjo"::
+
+NameError: name 'tqdm' is not defined
+
+Stack Trace:
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/dagster/core/execution/plan/utils.py", line 47, in solid_execution_error_boundary
+    yield
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/dagster/utils/__init__.py", line 406, in iterate_with_context
+    next_output = next(iterator)
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/dagster/core/execution/plan/compute_generator.py", line 66, in _coerce_solid_compute_fn_to_iterator
+    result = fn(context, **kwargs) if context_arg_provided else fn(**kwargs)
+  File "/Users/key/Documents/GitHub/hn_launches_analytics/pipeline/ops/parse_load_growjo.py", line 29, in parse_load_growjo
+    for name in tqdm(launches['name'].unique()):
+[0m
