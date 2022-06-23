@@ -205,7 +205,7 @@ st.subheader('Search for Launches')
 st.text('Launches table with filtering')
 with st.container():
         
-    name__col, yc_batch__col, industry__col = st.columns(4)
+    name__col, yc_batch__col, industry__col, is_oss__col = st.columns(4)
     
     with name__col:
         name = st.text_input('Name')
@@ -216,8 +216,8 @@ with st.container():
     with industry__col:
         industry = st.multiselect('Industry', industries)
         
-
-    is_oss = st.checkbox('Is Open-Source')
+    with is_oss__col:
+        is_oss = st.checkbox('Is Open-Source')
         
     if not yc_batch: yc_batch = yc_batches
     if not industry: industry = industries
