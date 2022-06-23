@@ -200,6 +200,24 @@ px.scatter(launches_metrics, x = metric_x, y = metric_y, color = 'industry', siz
            height = 600,
            title = f'{metric_x} vs {metric_y}, size: {metric_size}'), use_container_width = True)
 
+
+#Correlation map
+st.subheader('Metrics Correlation map')
+st.text(
+"""
+This is Pearson correlaion map between metrics
+""")
+corr = launches_metrics[['text_len', 'score',
+                         'comments_qty', 'comments_pos_qty', 'comments_neg_qty', 
+                         'employees', 'revenue', 'total_funding', 'github_stars']].corr().round(2)
+
+st.plotly_chart(\
+go.Figure(go.Heatmap(z = corr.values, x = corr.columns, y = corr.columns, 
+                     text = corr.values, texttemplate = '%{text}',
+                     colorscale = px.colors.diverging.RdBu,
+                     zmin = -1, zmax = 1)).show(), use_container_width = True)
+
+
 #Search for launches
 st.subheader('Search for Launches')
 st.text('Launches table with filtering')
@@ -231,23 +249,7 @@ with st.container():
     launches_table['github_stars'] = launches_table['github_stars'].replace(0, '').astype('str')
 
     st.dataframe(launches_table.style.set_properties(subset = ['is_oss'], **{'width': '1000px'}))
-    
-    
-#Correlation map
-st.subheader('Metrics Correlation map')
-st.text(
-"""
-This is Pearson correlaion map between metrics
-""")
-corr = launches_metrics[['text_len', 'score',
-                         'comments_qty', 'comments_pos_qty', 'comments_neg_qty', 
-                         'employees', 'revenue', 'total_funding', 'github_stars']].corr().round(2)
 
-st.plotly_chart(\
-go.Figure(go.Heatmap(z = corr.values, x = corr.columns, y = corr.columns, 
-                     text = corr.values, texttemplate = '%{text}',
-                     colorscale = px.colors.diverging.RdBu,
-                     zmin = -1, zmax = 1)).show(), use_container_width = True)
 
 st.text(
 """
