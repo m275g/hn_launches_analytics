@@ -1,0 +1,19 @@
+FROM python:3.7-slim
+
+ENV DAGSTER_HOME=/opt/dagster/dagster_home/
+
+RUN mkdir -p /opt/dagster/dagster_home /opt/dagster/app
+
+RUN touch /opt/dagster/dagster_home/dagster.yaml
+
+WORKDIR /opt/dagster/app
+
+COPY . .
+
+RUN pip3 install -r requirements.txt
+
+RUN python3 nltk_download.py
+
+EXPOSE 3000
+
+CMD ["/bin/bash","-c","dagit -h 0.0.0.0 -p 8080 & dagster-daemon run"]

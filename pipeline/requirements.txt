@@ -1,0 +1,9 @@
+requests
+numpy
+pandas
+clickhouse-driver
+nltk
+beautifulsoup4
+PyYAML
+dagster
+dagit
