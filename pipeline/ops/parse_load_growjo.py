@@ -68,7 +68,7 @@ def parse_load_growjo(context) -> None:
     
     
     #[Get GitHub stats]
-    github_api_token = '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'
+    github_api_token = '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'
 
     company_oss = pd.DataFrame(columns = ['item_id', 'github_repo', 'github_stars', 'github_forks', 'github_open_issues'])
 

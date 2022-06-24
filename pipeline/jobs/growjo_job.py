@@ -7,4 +7,9 @@ def growjo_job():
     
     parse_load_growjo()
     
-basic_schedule = ScheduleDefinition(job = growjo_job, cron_schedule = '@daily')
+@schedule(job = growjo_job,
+          cron_schedule = "@daily",
+          execution_timezone = "Europe/Moscow",
+          default_status = DefaultScheduleStatus.RUNNING)
+def growjo_job_schedule(context):
+    return {}

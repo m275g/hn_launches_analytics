@@ -8,4 +8,9 @@ def hn_launches_job():
     
     transform_load_hn_launches(parse_hn_launches())
     
-basic_schedule = ScheduleDefinition(job = hn_launches_job, cron_schedule = '@daily')
+@schedule(job = hn_launches_job,
+          cron_schedule = "@daily",
+          execution_timezone = "Europe/Moscow",
+          default_status = DefaultScheduleStatus.RUNNING)
+def hn_launches_schedule(context):
+    return {}
