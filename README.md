@@ -1,2 +1,8 @@
-# hn_launches_analytics
- Analytics of YC companies' launches on HackerNews
+# HackerNews Launches Analytics
+Analytics of YC companies' launches on HackerNews   
+
+### Pipeline
+Pipeline on Dagster  
+
+### Streamlit Dashbord
+Dashboard on Streamlit
