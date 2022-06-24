@@ -14,7 +14,7 @@ from utils.utils import *
 from dagster import op, Out, In
 
 
-with open('config.yaml') as c: 
+with open('./config.yaml') as c: 
     config = yaml.load(c, Loader = SafeLoader)
 
 

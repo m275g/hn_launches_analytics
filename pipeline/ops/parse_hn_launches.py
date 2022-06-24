@@ -1,7 +1,9 @@
 import os, sys, time, random
 from typing import Tuple
-import requests as r 
+import requests as r
 import json
+import yaml
+from yaml.loader import SafeLoader
 from bs4 import BeautifulSoup
 import datetime as dt
 import numpy as np
@@ -15,13 +17,17 @@ import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 
+with open('/opt/dagster/app/ops/config.yaml') as c:
+    config = yaml.load(c, Loader = SafeLoader)
+
+
 @op(description = 'Parse launches from HN')
 def parse_hn_launches(context) -> dict:
-    
-    
+
+
     #[Count HN pages to parse]
-    clickhouse = Client('85.193.83.20', database = 'hn_launches',
-                        user = 'admin', password = '0987654321')
+    clickhouse = Client(host = config['clickhouse']['host'], database = 'hn_launches',
+                        user = config['clickhouse']['user'], password =  config['clickhouse']['password'])
     
     ch_items = clickhouse.query_dataframe('select uniq(item_id) as items from hn_launches.launches;')
     

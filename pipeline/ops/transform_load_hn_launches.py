@@ -13,7 +13,7 @@ from utils.utils import *
 from dagster import op, Out, In
 
 
-with open('config.yaml') as c: 
+with open('/opt/dagster/app/ops/config.yaml') as c:
     config = yaml.load(c, Loader = SafeLoader)
 
 
@@ -26,8 +26,8 @@ def transform_load_hn_launches(context, launches_dict:dict) -> None:
     
         
     #[Сhecking if parsed new items]
-    clickhouse = Client(config['clickhouse']['host'], database = 'hn_launches',
-                        user = config['clickhouse']['user'], config['clickhouse']['password'])
+    clickhouse = Client(nano = config['clickhouse']['host'], database = 'hn_launches',
+                        user = config['clickhouse']['user'], password = config['clickhouse']['password'])
     
     ch_launches = clickhouse.query_dataframe('select distinct item_id from hn_launches.launches;')
     ch_comments = clickhouse.query_dataframe('select distinct comment_id from hn_launches.comments;')
