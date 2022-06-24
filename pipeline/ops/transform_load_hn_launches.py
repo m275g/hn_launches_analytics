@@ -1,5 +1,7 @@
 import os, sys, time, random
 from typing import Tuple
+import yaml
+from yaml.loader import SafeLoader
 import datetime as dt
 import numpy as np
 import pandas as pd
@@ -11,6 +13,10 @@ from utils.utils import *
 from dagster import op, Out, In
 
 
+with open('config.yaml') as c: 
+    config = yaml.load(c, Loader = SafeLoader)
+
+
 @op(description = 'Tranform HN launches: fields extraction, labeling, comments sentiments; and load to CH')
 def transform_load_hn_launches(context, launches_dict:dict) -> None:
     
@@ -20,8 +26,8 @@ def transform_load_hn_launches(context, launches_dict:dict) -> None:
     
         
     #[Сhecking if parsed new items]
-    clickhouse = Client('85.193.83.20', database = 'hn_launches',
-                        user = 'admin', password = '0987654321')
+    clickhouse = Client(config['clickhouse']['host'], database = 'hn_launches',
+                        user = config['clickhouse']['user'], config['clickhouse']['password'])
     
     ch_launches = clickhouse.query_dataframe('select distinct item_id from hn_launches.launches;')
     ch_comments = clickhouse.query_dataframe('select distinct comment_id from hn_launches.comments;')

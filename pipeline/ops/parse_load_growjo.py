@@ -2,6 +2,8 @@ import os, sys, time, random
 from typing import Tuple
 import requests as r 
 import json
+import yaml
+from yaml.loader import SafeLoader
 from bs4 import BeautifulSoup
 import datetime as dt
 import numpy as np
@@ -12,11 +14,15 @@ from utils.utils import *
 from dagster import op, Out, In
 
 
+with open('config.yaml') as c: 
+    config = yaml.load(c, Loader = SafeLoader)
+
+
 @op(description = 'Parse companies growth info from Gowjo')
 def parse_load_growjo(context) -> None:
     
-    clickhouse = Client('85.193.83.20', database = 'hn_launches',
-                        user = 'admin', password = '0987654321')
+    clickhouse = Client(config['clickhouse']['host'], database = 'hn_launches',
+                        user = config['clickhouse']['user'], config['clickhouse']['password'])
     
     launches = clickhouse.query_dataframe('select distinct item_id, name, urls, is_oss from hn_launches.launches;')
     ch_company_growth = ('select distinct item_id from hn_launches.company_growth;')
@@ -68,7 +74,7 @@ def parse_load_growjo(context) -> None:
     
     
     #[Get GitHub stats]
-    github_api_token = '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'
+    github_api_token = config['github']['api_key']
 
     company_oss = pd.DataFrame(columns = ['item_id', 'github_repo', 'github_stars', 'github_forks', 'github_open_issues'])
 
