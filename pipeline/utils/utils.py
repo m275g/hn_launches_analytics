@@ -6,6 +6,7 @@ import requests as r
 import json
 
 
+#[Parsing utils]
 headers__list = \
     [{'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15',
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
@@ -26,7 +27,6 @@ headers__list = \
 
 history = ['http://google.com', 'https://www.google.com/search?q=hacker+news', 'https://news.ycombinator.com/news']
 
-
 def create_session():
     
     global s
@@ -40,6 +40,8 @@ def create_session():
 
 #def rotate_ip()
 
+
+#[Labeling utils]
 labels__dict = {'Healthcare': ['health ', 'telehealth', 'telemedicine', 'wellness', 'fitness', 'doctor', 'patients', 'meds', 'drugs', 'hospitalization', \
                                'therapy', 'diseases', 'psychology', 'sleep', 'meditation', 'relief', 'medication'],
                 'Education': ['education', 'teaching', 'student', 'teacher', ' class ', 'exam', 'schooler'],

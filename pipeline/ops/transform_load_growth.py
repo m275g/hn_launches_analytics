@@ -32,7 +32,7 @@ def transform_load_growth(context, company_growth:pd.core.frame.DataFrame, compa
                                             'github_stars': 'int', 'github_forks': 'int', 'github_open_issues': 'int'})
 
 
-    if len(company_growth['item_id']) >= len(ch_company_growth['item_id']):
+    if len(company_growth) >= len(ch_company_growth):
 
         clickhouse.execute('alter table hn_launches.company_growth delete where 1=1;')
 

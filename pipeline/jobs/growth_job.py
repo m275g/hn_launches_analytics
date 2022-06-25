@@ -1,6 +1,5 @@
 from ops.parse_growjo import parse_growjo
 from ops.parse_github_stats import parse_github
-
 from dagster import op, Out, In, graph, job, repository, schedule, ScheduleDefinition, get_dagster_logger
 
 
