@@ -153,7 +153,7 @@ with ind_top_neg__col:
                .sort_values('comments_neg_qty', ascending = False),
            x = 'comments_neg_qty', y = 'industry', color = 'industry', 
            title = 'Top Negative Commented Industries') \
-      .update_xaxes(autorange = 'reversed').update(layout_showlegend = False).update_traces(marker_color = '#a91820'), use_container_width = True)
+      .update_xaxes(autorange = 'reversed').update(layout_showlegend = False).update_traces(marker_color = '#ef553b'), use_container_width = True)
 
 #Industries top by comments_pos_qty
 with ind_top_pos__col:
@@ -187,7 +187,7 @@ with launch_top_neg__col:
                .sort_values('comments_neg_qty', ascending = False)[:50],
            x = 'comments_neg_qty', y = 'name', 
            title = 'Top Negative Commented Launches') \
-      .update_xaxes(autorange = 'reversed').update(layout_showlegend = False).update_traces(marker_color = '#a91820'), use_container_width = True)
+      .update_xaxes(autorange = 'reversed').update(layout_showlegend = False).update_traces(marker_color = '#ef553b'), use_container_width = True)
 
 #Launhes top 50 by comments_pos_qty
 with launch_top_pos__col:
