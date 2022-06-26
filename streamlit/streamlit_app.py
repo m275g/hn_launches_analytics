@@ -53,7 +53,7 @@ try:
     launches_metrics = get_launches_metrics()
 except Exception:
     st.error('Data is not available at the moment:( Please, try later.')
-    st.exception(Exception)
+    #st.exception(Exception)
     st.stop()
     
 #[Const]
@@ -79,20 +79,48 @@ This is analytics of YC Companies' launches in HackerNews:
 by: @m275g
 """)
 
+#Launches dynamics
 st.subheader('Launches dynamics')
+launches_qty__col, avg_score__col, avg_comments__col = st.columns(3)
+
+#Launches stats
+with launches_qty__col:
+    st.metric('Launches Qty', launches_metrics['item_id'].nunique())
+    
+with avg_score__col:
+    st.metric('Avg Score on Launch', launches_metrics['score'].mean().round(2))
+    
+with avg_comments__col:
+    st.metric('Avg Comments on Launch', launches_metrics['comments_qty'].mean().round(2))
+
 #Launches line
 st.plotly_chart(\
-px.line(launches_metrics[launches_metrics['yc_batch_y'].isin([19, 20, 21])].groupby(pd.Grouper(key = 'date', freq = 'M', axis = 0))['item_id'] \
-               .nunique().reset_index().rename(columns = {'item_id': 'launches'}), 
+px.line(launches_metrics[launches_metrics['yc_batch_y'].isin([19, 20, 21])] \
+            .groupby(pd.Grouper(key = 'date', freq = 'M', axis = 0))['item_id'] \
+            .nunique().reset_index().rename(columns = {'item_id': 'launches'}), 
         x = 'date', y = 'launches', 
         title = 'Launches Dynamics').update_traces(line_color = '#f26522'), use_container_width = True)
 
 #Batch
-st.plotly_chart(\
-px.bar(launches_metrics[(launches_metrics['yc_batch_y'].isin([19, 20, 21])) & (~launches_metrics['yc_batch'].str.contains('Nonprofit'))].groupby(['yc_batch', 'yc_batch_y', 'industry'])['item_id'] \
-            .nunique().reset_index().sort_values('yc_batch_y', ascending = False).rename(columns = {'item_id': 'launches'}), 
-       x = 'launches', y = 'yc_batch', color = 'industry',
-       title = 'Launches by Batches'), use_container_width = True)
+launches_bar__col, launches_tree__col = st.columns(2)
+
+with launches_bar__col:
+    st.plotly_chart(\
+    px.bar(launches_metrics[(launches_metrics['yc_batch_y'].isin([19, 20, 21])) & \
+                            (~launches_metrics['yc_batch'].str.contains('Nonprofit'))] \
+               .groupby(['yc_batch', 'yc_batch_y', 'industry'])['item_id'] \
+               .nunique().reset_index().sort_values('yc_batch_y', ascending = False).rename(columns = {'item_id': 'launches'}), 
+           x = 'launches', y = 'yc_batch', color = 'industry',
+           title = 'Launches by Batches'), use_container_width = True)
+
+with launches_tree__col:
+    st.plotly_chart(\
+    px.treemap(launches_metrics[(launches_metrics['yc_batch_y'].isin([19, 20, 21])) & \
+                                (~launches_metrics['yc_batch'].str.contains('Nonprofit'))] \
+                   .groupby(['yc_batch', 'industry'])['item_id'] \
+                   .nunique().reset_index().rename(columns = {'item_id': 'launches'}), 
+               values = 'launches', path = ['yc_batch', 'industry'], 
+               title = 'Launches by Batch&Industry'), use_container_width = True)
 
 #Industries tops
 st.subheader('Top Industries by score&comments')
@@ -114,7 +142,7 @@ with ind_top_comm__col:
            x = 'comments_qty', y = 'industry', color = 'industry', 
            title = 'Top Commented Industries').update(layout_showlegend = False), use_container_width = True)
 
-
+#Industries top by pos/neg comments
 st.subheader('Top Industries by negative&positive comments')
 ind_top_neg__col, ind_top_pos__col = st.columns(2)
 
@@ -124,7 +152,8 @@ with ind_top_neg__col:
     px.bar(launches_metrics.groupby(['industry'])['comments_neg_qty'].mean().reset_index() \
                .sort_values('comments_neg_qty', ascending = False),
            x = 'comments_neg_qty', y = 'industry', color = 'industry', 
-           title = 'Top Negative Commented Industries').update_xaxes(autorange = 'reversed').update(layout_showlegend = False), use_container_width = True)
+           title = 'Top Negative Commented Industries') \
+      .update_xaxes(autorange = 'reversed').update(layout_showlegend = False).update_traces(marker_color = '#a91820'), use_container_width = True)
 
 #Industries top by comments_pos_qty
 with ind_top_pos__col:
@@ -132,19 +161,21 @@ with ind_top_pos__col:
     px.bar(launches_metrics.groupby(['industry'])['comments_pos_qty'].mean().reset_index() \
                .sort_values('comments_pos_qty', ascending = False),
            x = 'comments_pos_qty', y = 'industry', color = 'industry', 
-           title = 'Top Positive Commented Industries').update(layout_showlegend = False), use_container_width = True)
+           title = 'Top Positive Commented Industries') \
+      .update(layout_showlegend = False).update_traces(marker_color = '#f26522'), use_container_width = True)
 
 #Top Launches by comments
 st.subheader('Top Launches by comments')
 st.text('Top 100 Launches by comments qty')
 st.plotly_chart(\
-px.bar(launches_metrics.groupby(['name'])[['comments_qty', 'comments_neu_qty', 'comments_pos_qty', 'comments_neg_qty']].max().reset_index() \
+px.bar(launches_metrics.groupby(['name']) \
+       [['comments_qty', 'comments_neu_qty', 'comments_pos_qty', 'comments_neg_qty']].max().reset_index() \
            .sort_values('comments_qty', ascending = False)[:100],
        y = ['comments_neu_qty', 'comments_pos_qty', 'comments_neg_qty'], x = 'name', 
        color_discrete_map = {'comments_neu_qty': '#636EFA', 'comments_pos_qty': '#00CC96', 'comments_neg_qty': '#EF553B'},
        title = f'Top Commented Lauhches'), use_container_width = True)
 
-
+#Launhes top by pos/neg comments
 st.subheader('Top Launches by negative&positive comments')
 st.text('Top 50 Launches by negative&positive comments qty')
 launch_top_neg__col, launch_top_pos__col = st.columns(2)
@@ -155,7 +186,8 @@ with launch_top_neg__col:
     px.bar(launches_metrics.groupby(['name'])['comments_neg_qty'].sum().reset_index() \
                .sort_values('comments_neg_qty', ascending = False)[:50],
            x = 'comments_neg_qty', y = 'name', 
-           title = 'Top Negative Commented Launches').update_xaxes(autorange = 'reversed').update(layout_showlegend = False), use_container_width = True)
+           title = 'Top Negative Commented Launches') \
+      .update_xaxes(autorange = 'reversed').update(layout_showlegend = False).update_traces(marker_color = '#a91820'), use_container_width = True)
 
 #Launhes top 50 by comments_pos_qty
 with launch_top_pos__col:
@@ -163,7 +195,8 @@ with launch_top_pos__col:
     px.bar(launches_metrics.groupby(['name'])['comments_pos_qty'].sum().reset_index() \
                .sort_values('comments_pos_qty', ascending = False)[:50],
            x = 'comments_pos_qty', y = 'name', 
-           title = 'Top Positive Commented Launches').update(layout_showlegend = False), use_container_width = True)
+           title = 'Top Positive Commented Launches') \
+      .update(layout_showlegend = False).update_traces(marker_color = '#f26522'), use_container_width = True)
 
 #Top laucnhes by {metric} bar
 st.subheader('Top Launches by Metric')
@@ -173,7 +206,7 @@ metric = st.selectbox('Metric', ('text_len', 'score', 'comments_qty', 'comments_
 st.plotly_chart(\
 px.bar(launches_metrics.groupby(['name'])[metric].max().reset_index().sort_values(metric, ascending = False)[:100],
        y = metric, x = 'name', 
-       title = f'Top Launches by {metric}'), use_container_width = True)
+       title = f'Top Launches by {metric}').update_traces(marker_color = '#f26522'), use_container_width = True)
 
 #Metrics scatterplot
 st.subheader('Metric vs Other Metric')
@@ -200,6 +233,23 @@ px.scatter(launches_metrics, x = metric_x, y = metric_y, color = 'industry', siz
            height = 600,
            title = f'{metric_x} vs {metric_y}, size: {metric_size}'), use_container_width = True)
 
+#corr 
+corr = launches_metrics[['text_len', 'score',
+                         'comments_qty', 'comments_pos_qty', 'comments_neg_qty', 
+                         'employees', 'revenue', 'total_funding', 'github_stars']].corr().round(2)
+
+#Impact to score
+st.subheader('Metrics impact to Score')
+st.text(
+"""
+This is impact level of metrics to score
+""")
+st.plotly_chart(\
+px.bar(corr['score'][['text_len', 'comments_qty', 'comments_pos_qty', 'comments_neg_qty',
+                      'employees', 'revenue', 'total_funding', 'github_stars']].to_frame().reset_index() \
+           .rename(columns = {'score': 'corr'}).sort_values('corr', ascending = False), 
+       x = 'index', y = 'corr', range_y = [-0.5, 1], orientation = 'v', 
+       title = 'Metrics impact to score').update_traces(marker_color = '#f26522'), use_container_width = True)
 
 #Correlation map
 st.subheader('Metrics Correlation map')
@@ -207,16 +257,11 @@ st.text(
 """
 This is Pearson correlaion map between metrics
 """)
-corr = launches_metrics[['text_len', 'score',
-                         'comments_qty', 'comments_pos_qty', 'comments_neg_qty', 
-                         'employees', 'revenue', 'total_funding', 'github_stars']].corr().round(2)
-
 st.plotly_chart(\
 go.Figure(go.Heatmap(z = corr.values, x = corr.columns, y = corr.columns, 
                      text = corr.values, texttemplate = '%{text}',
                      colorscale = px.colors.diverging.RdBu,
                      zmin = -1, zmax = 1)), use_container_width = True)
-
 
 #Search for launches
 st.subheader('Search for Launches')
@@ -240,15 +285,15 @@ with st.container():
     if not yc_batch: yc_batch = yc_batches
     if not industry: industry = industries
     
-    launches_table = launches_metrics[(launches_metrics['name'].str.contains(name, case = False)) & \
-                                      (launches_metrics['yc_batch'].isin(yc_batch)) & \
-                                      (launches_metrics['industry'].isin(industry)) & \
-                                      (launches_metrics['is_oss'].isin(industry) == int(is_oss))][['name', 'yc_batch', 'industry', 'is_oss', 'short_description', 'score', 'comments_qty', 'employees', 'revenue', 'total_funding', 'github_stars']]
+launches_table = launches_metrics[(launches_metrics['name'].str.contains(name, case = False)) & \
+                                  (launches_metrics['yc_batch'].isin(yc_batch)) & \
+                                  (launches_metrics['industry'].isin(industry)) & \
+                                  (launches_metrics['is_oss'].isin(industry) == int(is_oss))][['name', 'yc_batch', 'industry', 'is_oss', 'short_description', 'score', 'comments_qty', 'employees', 'revenue', 'total_funding', 'github_stars']]
 
-    launches_table[['employees', 'revenue', 'total_funding']] = launches_table[['employees', 'revenue', 'total_funding']].replace([0, 0.0], 'NA').astype('str')
-    launches_table['github_stars'] = launches_table['github_stars'].replace(0, '').astype('str')
+launches_table[['employees', 'revenue', 'total_funding']] = launches_table[['employees', 'revenue', 'total_funding']].replace([0, 0.0], 'NA').astype('str')
+launches_table['github_stars'] = launches_table['github_stars'].replace(0, '').astype('str')
 
-    st.dataframe(launches_table.style.set_properties(subset = ['is_oss'], **{'width': '1000px'}))
+st.dataframe(launches_table.style.set_properties(subset = ['is_oss'], **{'width': '1000px'}))
 
 
 st.text(
