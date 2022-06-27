@@ -26,4 +26,4 @@ This is analytics of YC Companies' launches in HackerNews:
 - correlation between launch metrics and company growth metrics
 - more...  
 
-Deployed dashboard on Streamlit.Share: https://m275g-hn-launches-analytics-streamlitstreamlit-app-dp1i7o.streamlitapp.com/
+Deployed dashboard on Streamlit.Share (open in Chrome): https://m275g-hn-launches-analytics-streamlitstreamlit-app-dp1i7o.streamlitapp.com/
